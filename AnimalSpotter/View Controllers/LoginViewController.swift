@@ -31,6 +31,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         signInButton.layer.cornerRadius = 8.0
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+         
+        usernameTextField.becomeFirstResponder()
+    }
+    
+    
+    
+    
     // MARK: - Action Handlers
     
     @IBAction func buttonTapped(_ sender: UIButton) {
@@ -46,7 +55,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     do {
                         let success = try result.get()
                         if success {
-                            
+                            DispatchQueue.main.async {
+                                let alertController = UIAlertController(title: "Sign Up Successful", message: "Now, please log in.", preferredStyle: .alert)
+                                let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                                alertController.addAction(alertAction)
+                                self.present(alertController, animated: true) {
+                                    self.loginType = .signIn
+                                    self.loginTypeSegmentedControl.selectedSegmentIndex = 1
+                                    self.signInButton.setTitle("Sign In", for: .normal)
+                                }
+                            }
                         }
                     } catch {
                         print("Error Signing up: \(error)")
@@ -54,6 +72,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     }
                     
                 })
+            } else {
+                // call signIn method
             }
         }
     }
@@ -63,7 +83,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func signInTypeChanged(_ sender: UISegmentedControl) {
         // switch UI between login types
         
-        
+        if sender.selectedSegmentIndex == 0 {
+            // sign up
+            loginType = .signUp
+            signInButton.setTitle("Sign Up", for: .normal)
+        } else {
+            loginType = .signIn
+            signInButton.setTitle("Sign In", for: .normal)
+        }
         
         
         
