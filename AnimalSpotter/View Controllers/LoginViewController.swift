@@ -22,13 +22,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     var apiController: APIController?
     var loginType = LoginType.signUp
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         signInButton.backgroundColor = UIColor(hue: 190/360, saturation: 70/100, brightness: 80/100, alpha: 1.0)
-            signInButton.tintColor = .white
-            signInButton.layer.cornerRadius = 8.0
+        signInButton.tintColor = .white
+        signInButton.layer.cornerRadius = 8.0
     }
     
     // MARK: - Action Handlers
@@ -42,12 +42,23 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             let user = User(username: username, password: password)
             
             if loginType == .signUp {
-                
+                apiController?.signUp(with: user, completion: { result in
+                    do {
+                        let success = try result.get()
+                        if success {
+                            
+                        }
+                    } catch {
+                        print("Error Signing up: \(error)")
+                        
+                    }
+                    
+                })
             }
-        
         }
-        
     }
+    
+    
     
     @IBAction func signInTypeChanged(_ sender: UISegmentedControl) {
         // switch UI between login types

@@ -4,7 +4,6 @@
 //
 //  Created by Ben Gohlke on 4/16/19.
 //  Copyright © 2019 Lambda School. All rights reserved.
-//
 
 import Foundation
 import UIKit
@@ -24,9 +23,7 @@ final class APIController {
     private lazy var signUpURL = baseURL.appendingPathComponent("/users/signup")
     private lazy var signInURL = baseURL.appendingPathComponent("/users/login")
     
-   private lazy var  jsonEncoder = JSONEncoder()
-    
-    
+    private lazy var  jsonEncoder = JSONEncoder()
     
     // create function for sign up
     
@@ -39,6 +36,26 @@ final class APIController {
         
         do {
             let jsonData = try jsonEncoder.encode(user)
+            request.httpBody = jsonData
+            
+            let task  = URLSession.shared.dataTask(with: request) { (_, response, error) in
+                if let error = error {
+                    print("Sign-up failed with\(error)")
+                    completion(.failure(.failedSignUp))
+                    return
+                }
+                
+                guard let response = response as? HTTPURLResponse,
+                    response.statusCode == 200 else {
+                        print("Sign-up failed.")
+                        completion(.failure(.failedSignUp))
+                        return
+                }
+               
+                completion(.success(true))
+            }
+        
+            task.resume()
         } catch {
             print("Error encoding User: \(error)")
             completion(.failure(.failedSignUp))
